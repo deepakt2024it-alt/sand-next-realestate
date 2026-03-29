@@ -34,9 +34,9 @@ export default async function HomePage() {
                 className="px-6 py-3 bg-white text-teal-800 font-semibold rounded-xl hover:bg-teal-50 transition shadow-lg">
                 🔍 Browse Properties
               </Link>
-              <Link href="/auth/register"
+              <Link href="/dashboard"
                 className="px-6 py-3 bg-teal-500/30 text-white font-semibold rounded-xl hover:bg-teal-500/50 backdrop-blur transition border border-teal-400/30">
-                + List Property
+                + Sell Property
               </Link>
             </div>
           </div>

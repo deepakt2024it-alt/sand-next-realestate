@@ -42,6 +42,10 @@ export function Navbar() {
             className="px-3 py-2 text-sm font-bold text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition">
             Post Requirement
           </Link>
+          <Link href="/dashboard"
+            className="px-4 py-2 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition shadow-sm ml-2">
+            Sell Property
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -83,6 +87,17 @@ export function Navbar() {
               {t.charAt(0) + t.slice(1).toLowerCase()}
             </Link>
           ))}
+          <div className="h-px bg-slate-200 my-2"></div>
+          <Link href="/buyer-request"
+            className="block px-3 py-2 text-sm font-bold text-amber-600 hover:bg-amber-50 rounded-lg"
+            onClick={() => setMenuOpen(false)}>
+            Post Requirement
+          </Link>
+          <Link href="/dashboard"
+            className="block px-3 py-2 text-sm font-bold text-teal-600 hover:bg-teal-50 rounded-lg"
+            onClick={() => setMenuOpen(false)}>
+            Sell Property
+          </Link>
         </div>
       )}
     </header>
