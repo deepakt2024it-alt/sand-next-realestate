@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server'
 
-// MOCK WHATSAPP API INTEGRATION
-// Replace this with actual Twilio / Meta Cloud API / Green API call
 export async function POST(req: Request) {
   try {
     const body = await req.json()
     const { trigger, payload } = body
 
-    const TARGET_NUMBER = '9361044698'
+    // Phone number to receive admin alerts
+    const TARGET_NUMBER = '919361044698' 
 
     let message = ''
 
@@ -19,27 +18,41 @@ export async function POST(req: Request) {
         message = `🏠 *New Buyer Requirement*\n\nName: ${payload.name}\nPhone: ${payload.phone}\nLocation: ${payload.location}\nBudget: ${payload.budget}\nDetails: ${payload.requirements}`
         break
       case 'BUYER_INTEREST':
-        // This is triggered from the property detail page when a buyer clicks "Contact Seller"
         message = `🤝 *New Property Lead*\n\nBuyer: ${payload.buyerName} (${payload.buyerPhone})\nInterested in Property ID: ${payload.propertyId}\n\n*Auto-sending verified seller docs to buyer now...*`
         break
       default:
         message = `Generic Notification: ${JSON.stringify(payload)}`
     }
 
-    // --- MOCK API CALL START ---
-    console.log('\n========================================')
-    console.log(`📡 [WHATSAPP API MOCK] Sending to ${TARGET_NUMBER}`)
-    console.log('📝 MESSAGE CONTENT:')
-    console.log(message)
-    console.log('========================================\n')
-    // --- MOCK API CALL END ---
+    const instanceId = process.env.ULTRAMSG_INSTANCE_ID
+    const token = process.env.ULTRAMSG_TOKEN
 
-    // TODO: Await actual axios/fetch call to WA Provider here
-    // example: await fetch('https://api.whatsapp-provider.com/send', { ... })
+    if (!instanceId || !token) {
+      console.log("No UltraMsg credentials found. Message generated but not sent:", message)
+      return NextResponse.json({ success: true, message: 'Simulated (No API keys)' })
+    }
 
-    return NextResponse.json({ success: true, message: 'WhatsApp notification triggered' })
+    const url = `https://api.ultramsg.com/${instanceId}/messages/chat`
+    const data = new URLSearchParams()
+    data.append("token", token)
+    data.append("to", TARGET_NUMBER)
+    data.append("body", message)
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: data
+    })
+
+    const result = await response.json()
+    console.log("UltraMsg API Response:", result)
+
+    return NextResponse.json({ success: true, result })
   } catch (error) {
     console.error('WhatsApp API Error:', error)
     return NextResponse.json({ error: 'Failed to trigger WhatsApp' }, { status: 500 })
   }
 }
+
