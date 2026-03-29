@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
     switch (trigger) {
       case 'KYC_SUBMITTED':
-        message = `🔔 *New KYC Submitted*\n\nName: ${payload.name}\nPhone: ${payload.phone}\nLand Type: ${payload.landType}\nSize: ${payload.landSize}\n\nReview in Admin Dashboard.`
+        message = `🔔 *New KYC Submitted*\n\nName: ${payload.name}\nPhone: ${payload.phone}\nLand Type: ${payload.landType}\nSize: ${payload.landSize}\n\n*Uploaded Documents:*\n📄 Aadhaar: ${payload.aadhaarUrl}\n💳 PAN: ${payload.panUrl}\n🗺 Land Doc: ${payload.landDocUrl}\n📸 Selfie: ${payload.selfieUrl}\n\nReview & Approve in Admin Dashboard.`
         break
       case 'BUYER_REQUEST':
         message = `🏠 *New Buyer Requirement*\n\nName: ${payload.name}\nPhone: ${payload.phone}\nLocation: ${payload.location}\nBudget: ${payload.budget}\nDetails: ${payload.requirements}`

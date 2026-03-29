@@ -145,7 +145,11 @@ export default function SellerKYCPage() {
               name: formData.fullName,
               phone: formData.phone,
               landSize: formData.landSize,
-              landType: formData.landType
+              landType: formData.landType,
+              aadhaarUrl,
+              panUrl,
+              landDocUrl,
+              selfieUrl
             }
           })
         })
@@ -165,7 +169,7 @@ export default function SellerKYCPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+      <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 mb-6">
         
         {/* Header */}
         <div className="bg-gradient-to-r from-teal-900 to-teal-700 p-8 text-white relative">
@@ -345,6 +349,22 @@ export default function SellerKYCPage() {
 
         </div>
       </div>
+      
+      {/* WhatsApp Help CTA */}
+      <div className="bg-green-50 rounded-2xl p-6 border border-green-200 flex items-center justify-between text-left">
+        <div>
+          <h3 className="text-lg font-bold text-green-900">Need help with documentation?</h3>
+          <p className="text-sm text-green-700">Contact admin directly on WhatsApp for manual verification support.</p>
+        </div>
+        <a 
+          href="https://wa.me/919361044698?text=Hi Admin, I need help with my Seller KYC documentation and registration process." 
+          target="_blank" rel="noreferrer"
+          className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition"
+        >
+          💬 WhatsApp Admin
+        </a>
+      </div>
     </div>
   )
 }
+

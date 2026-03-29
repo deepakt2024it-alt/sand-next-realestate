@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('')
@@ -13,6 +14,7 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
+  const router = useRouter()
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,8 +45,16 @@ export default function RegisterPage() {
       })
     }
 
-    setSuccess(true)
-    setLoading(false)
+    if (data.session) {
+      if (role === 'SELLER') {
+        router.push('/dashboard/kyc')
+      } else {
+        router.push('/dashboard')
+      }
+    } else {
+      setSuccess(true)
+      setLoading(false)
+    }
   }
 
   if (success) {
@@ -61,6 +71,7 @@ export default function RegisterPage() {
       </div>
     )
   }
+
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
