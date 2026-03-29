@@ -35,9 +35,9 @@ export default function RegisterPage() {
       return
     }
 
-    // Create profile
+    // Create or Update profile
     if (data.user) {
-      await supabase.from('profiles').insert({
+      await supabase.from('profiles').upsert({
         id: data.user.id,
         full_name: fullName,
         mobile,
@@ -46,6 +46,7 @@ export default function RegisterPage() {
     }
 
     if (data.session) {
+      router.refresh()
       if (role === 'SELLER') {
         router.push('/dashboard/kyc')
       } else {
