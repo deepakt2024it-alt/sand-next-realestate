@@ -26,15 +26,11 @@ export default async function DashboardPage() {
     .select('*, properties(*)')
     .eq('user_id', user.id)
 
-  let kycRecord = null
-  if (profile?.role === 'SELLER') {
-    const { data } = await supabase
-      .from('seller_kyc')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle()
-    kycRecord = data
-  }
+  const { data: kycRecord } = await supabase
+    .from('seller_kyc')
+    .select('*')
+    .eq('user_id', user.id)
+    .maybeSingle()
 
   const kycStatus = kycRecord?.status || 'NOT_SUBMITTED'
 
@@ -53,23 +49,25 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* KYC Warning Banner for Sellers */}
-      {profile?.role === 'SELLER' && kycStatus !== 'VERIFIED' && (
+      {/* Account Upgrade & KYC Banner */}
+      {kycStatus !== 'VERIFIED' && (
         <div className={`mb-8 p-6 rounded-2xl border ${kycStatus === 'NOT_SUBMITTED' ? 'bg-amber-50 border-amber-200' : 'bg-blue-50 border-blue-200'}`}>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <h3 className={`text-lg font-bold ${kycStatus === 'NOT_SUBMITTED' ? 'text-amber-800' : 'text-blue-800'}`}>
-                {kycStatus === 'NOT_SUBMITTED' ? '⚠️ Action Required: Complete your Seller KYC' : '⏳ KYC Verification Pending'}
+                {kycStatus === 'NOT_SUBMITTED' 
+                  ? (profile?.role === 'SELLER' ? '⚠️ Action Required: Complete your Seller KYC' : '🏠 Want to Sell a Property?')
+                  : '⏳ Seller Verification Pending'}
               </h3>
               <p className={`mt-1 text-sm ${kycStatus === 'NOT_SUBMITTED' ? 'text-amber-700' : 'text-blue-700'}`}>
                 {kycStatus === 'NOT_SUBMITTED' 
-                  ? 'You must complete the mandatory KYC verification process before you can list properties on our platform. This helps maintain a trusted marketplace.'
+                  ? 'Complete the mandatory KYC verification process to unlock your Seller dashboard and instantly list properties on our platform.'
                   : 'Your KYC documents have been submitted and are currently under review by our admin team. You will be notified once verified.'}
               </p>
             </div>
             {kycStatus === 'NOT_SUBMITTED' && (
               <Link href="/dashboard/kyc" className="shrink-0 bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors">
-                Start Verification
+                {profile?.role === 'SELLER' ? 'Start Verification' : 'Upgrade to Seller Account'}
               </Link>
             )}
           </div>
@@ -104,7 +102,7 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-bold text-slate-800">My Properties</h2>
           <div className="flex gap-4">
-            {profile?.role === 'SELLER' && kycStatus === 'VERIFIED' && (
+            {kycStatus === 'VERIFIED' && (
               <Link href="/properties/new" className="text-sm bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition">
                 + Add Listing
               </Link>
