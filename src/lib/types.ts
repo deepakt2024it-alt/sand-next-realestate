@@ -59,6 +59,36 @@ export interface Review {
   profiles?: Profile
 }
 
+export interface SellerKYC {
+  id: string
+  user_id: string
+  full_name: string
+  phone_number: string
+  aadhaar_url: string
+  pan_url: string
+  land_documents_url: string[]
+  location_lat: number
+  location_lng: number
+  land_size: string
+  land_type: string
+  owner_details: string
+  selfie_url: string
+  status: 'PENDING' | 'VERIFIED' | 'REJECTED'
+  created_at: string
+  updated_at: string
+}
+
+export interface BuyerRequirement {
+  id: string
+  buyer_id: string | null
+  name: string
+  phone_number: string
+  land_requirements: string
+  budget: string
+  preferred_location: string
+  created_at: string
+}
+
 export function formatPrice(price: number): string {
   if (price >= 10_000_000) return `₹${(price / 10_000_000).toFixed(2)} Cr`
   if (price >= 100_000) return `₹${(price / 100_000).toFixed(2)} L`

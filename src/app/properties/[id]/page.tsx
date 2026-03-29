@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { formatPrice } from '@/lib/types'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { ContactSellerButton } from '@/components/ContactSellerButton'
 
 export default async function PropertyDetailPage({
   params,
@@ -10,6 +11,14 @@ export default async function PropertyDetailPage({
 }) {
   const { id } = await params
   const supabase = await createClient()
+
+  // Fetch current user watching the property
+  const { data: { user } } = await supabase.auth.getUser()
+  let buyerProfile = null
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('full_name, mobile').eq('id', user.id).single()
+    buyerProfile = profile
+  }
 
   const { data: property, error } = await supabase
     .from('properties')
@@ -130,23 +139,41 @@ export default async function PropertyDetailPage({
                 </div>
               </div>
             )}
-            {seller?.mobile && (
+            
+            {user ? (
               <>
-                <a href={`tel:+91${seller.mobile}`}
-                  className="block w-full text-center py-3 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition">
-                  📞 Call Seller
-                </a>
-                <a href={`https://wa.me/91${seller.mobile}?text=Hi, I'm interested in: ${property.title}`}
-                  target="_blank"
-                  className="block w-full text-center py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition">
-                  💬 WhatsApp
-                </a>
+                {seller?.mobile && (
+                  <>
+                    <a href={`tel:+91${seller.mobile}`}
+                      className="block w-full text-center py-3 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition">
+                      📞 Call Seller
+                    </a>
+                    <a href={`https://wa.me/91${seller.mobile}?text=Hi, I'm interested in: ${property.title}`}
+                      target="_blank"
+                      className="block w-full text-center py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition">
+                      💬 WhatsApp
+                    </a>
+                    <div className="pt-2 border-t mt-4">
+                      <p className="text-xs text-slate-500 mb-3 text-center">Want to verify this property? Request the seller's verified land documents directly.</p>
+                      <ContactSellerButton 
+                        propertyId={property.id} 
+                        propertyTitle={property.title} 
+                        buyerName={buyerProfile?.full_name || user.email || 'A Buyer'} 
+                        buyerPhone={buyerProfile?.mobile || 'No Phone on Profile'} 
+                      />
+                    </div>
+                  </>
+                )}
               </>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-sm text-slate-600 mb-4">You must be logged in to view seller contact details or request documents.</p>
+                <Link href="/auth/login"
+                  className="block w-full text-center py-3 text-teal-600 font-semibold border-2 border-teal-200 rounded-xl hover:bg-teal-50 transition">
+                  Login to Contact
+                </Link>
+              </div>
             )}
-            <Link href="/auth/login"
-              className="block w-full text-center py-3 text-teal-600 font-semibold border-2 border-teal-200 rounded-xl hover:bg-teal-50 transition">
-              Login to Contact
-            </Link>
           </div>
         </aside>
       </div>

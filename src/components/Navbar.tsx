@@ -37,6 +37,11 @@ export function Navbar() {
               {t.charAt(0) + t.slice(1).toLowerCase()}
             </Link>
           ))}
+          <div className="w-px h-5 bg-slate-300 mx-2"></div>
+          <Link href="/buyer-request"
+            className="px-3 py-2 text-sm font-bold text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition">
+            Post Requirement
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">
